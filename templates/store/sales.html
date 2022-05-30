@@ -1,0 +1,182 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load admin_urls %}
+
+
+    {% block content %}
+
+      <div class="container py-5">
+        <h4 class="mb-3 text-center">Administrator Dashboard</h4> 
+        <h4 class="mb-3 text-right">{{date}}</h4> 
+        
+        
+        
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card mb-4" id="headings">
+                  <div class="card-header">Sales Chart</div>
+                  <div class="card-body">
+                    <canvas id="myChart" width="400" height="400"></canvas>
+                    <script>
+                    const ctx = document.getElementById('myChart').getContext('2d');
+                    const myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: [{% for sale in sales  %}'{{sale.total_orders}}',{% endfor %}],
+                            datasets: [{
+                                label: 'Revenue',
+                                data: [{% for sale in sales  %}'{{sale.revenue}}',{% endfor %}],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                    </script>
+                    {% for order in orders %}
+                    {% if forloop.last %}
+                    <h6>Total Revenue: {{order.revenue}}</h6>
+                    {% endif %}
+                    {% endfor %}
+                    {% for order in orders %}
+                    {% if forloop.last %}
+                    <h6>Total Orders: {{order.total_orders}}</h6>
+                    {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+    
+          <div class="col-lg-6">
+            <div class="card mb-4" id="headings">
+              <div class="card-header">Statistics</div>
+              <div class="card-body">
+                <a class="text-decoration-none text-dark" href="{% url 'admin:index' %}">
+                    <div class="card my-card shadow text-center p-3">
+                        <h4>Total Orders:</h4>
+                        {% for order in orders %}
+                    {% if forloop.last %}
+                    <h6>{{order.total_orders}}</h6>
+                    {% endif %}
+                    {% endfor %}
+                    </div>
+                </a>
+                <a class="text-decoration-none text-dark" href="{% url 'admin:index' %}">
+                    <div class="card my-card shadow text-center p-3">
+                        <h4>Pending Orders:</h4>
+                        {% for order in orders %}
+                    {% if forloop.last %}
+                    <h6>{{pending}}</h6>
+                    {% endif %}
+                    {% endfor %}
+                    </div>
+                </a>
+                <a class="text-decoration-none text-dark" href="{% url 'admin:index' %}">
+                    <div class="card my-card shadow text-center p-3">
+                        <h4>Pending Reservations:</h4>
+                        {% for order in orders %}
+                    {% if forloop.last %}
+                    <h6>{{reservation}}</h6>
+                    {% endif %}
+                    {% endfor %}
+                    </div>
+                </a>
+                <a class="text-decoration-none text-dark" href="{% url 'admin:index' %}">
+                    <div class="card my-card shadow text-center p-3">
+                        <h4>Delivered Orders:</h4>
+                        {% for order in orders %}
+                    {% if forloop.last %}
+                    <h6>{{delivered}}</h6>
+                    {% endif %}
+                    {% endfor %}
+                    </div>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card mb-4" id="headings">
+              <div class="card-header">Order Statistics</div>
+              <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Order</th>
+                        <th>Invoice</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in order_pending %}
+                          <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{order.id}}</td>
+                            <td>
+                              {{order.status}}
+                            </td>
+                          </tr>
+                        {% endfor %}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card mb-4" id="headings">
+              <div class="card-header">Reservation Statistics</div>
+              <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Reservation</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for reservation in reseravation_pending %}
+                          <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{reservation.event_name}}</td>
+                            <td>
+                              {{reservation.event_date}}
+                            </td>
+                            <td>
+                                {{reservation.status}}
+                              </td>
+                          </tr>
+                        {% endfor %}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+    
+        </div>
+        
+      </div>
+{% endblock content %}
